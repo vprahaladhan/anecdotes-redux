@@ -1,10 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import App from './App'
-import reducer from './reducers/anecdoteReducer'
+import anecdoteReducer from './reducers/anecdoteReducer'
+import filterReducer from './reducers/filterReducer';
+import notificationReducer from './reducers/notificationReducer'
+import searchTextReducer from './reducers/searchReducer';
 
-const store = createStore(reducer)
+// const reducer = combineReducers({
+//   anecdotes: anecdoteReducer,
+//   notification: notificationReducer
+// })
+
+const store = createStore(
+  combineReducers({
+    anecdotes: anecdoteReducer,
+    filter: filterReducer,
+    notification: notificationReducer,
+    searchText: searchTextReducer
+  })
+)
 
 const render = () => {
   ReactDOM.render(<App store={store} />, document.getElementById('root'))

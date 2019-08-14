@@ -24,11 +24,11 @@ const compare = (a, b) => {
   return b.votes - a.votes
 }
 
-export const vote = (id) => {
+export const vote = (anecdote) => {
   console.log("In vote of anecdoteReducer.js")
   return ({
     type: 'ADD_VOTE',
-    data: { id }
+    data: { id: anecdote.id }
   })
 }
 
@@ -54,10 +54,10 @@ const reducer = (state = initialState, action) => {
                                   return anecdotes.sort(compare)
                                 }
 
-    case 'ADD_ANECDOTE'       : return state.concat(action.data).sort(compare)
+    case 'ADD_ANECDOTE'       : return [...state].concat(action.data).sort(compare)
 
     case 'TOGGLE_IMPORTANCE'  : {
-                                  const anecdotes = [...state]
+                                  const anecdotes = [...state] 
                                   const anecdote = anecdotes.find(anecdote => anecdote.id === action.data.id)
                                   anecdote.important = !anecdote.important
                                   return anecdotes.sort(compare)
