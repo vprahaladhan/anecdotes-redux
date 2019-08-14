@@ -1,13 +1,18 @@
 import React from 'react'
-import {RadioGroup, Radio} from 'react-radio-group'
-import {vote, toggleImportanceOf} from '../reducers/anecdoteReducer' 
+import { RadioGroup, Radio } from 'react-radio-group'
+import { vote, toggleImportanceOf } from '../reducers/anecdoteReducer' 
 import { filterChange } from '../reducers/filterReducer';
-import {voteNotification, setNotification} from '../reducers/notificationReducer'
+import { voteNotification, setNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
+import { connect } from 'react-redux'
 
 const AnecdoteList = (props) => {
 
-    const { anecdotes, filter, searchText } = props.store.getState()
+    const { anecdotes, filter, searchText } =   { 
+                                                    anecdotes: props.anecdotes, 
+                                                    filter: props.filter,
+                                                    searchText: props.searchText
+                                                }
     
     const selectAnecdotes = (filter) => {
         const searchedAnecdotes = searchAnecdotes()
@@ -23,13 +28,13 @@ const AnecdoteList = (props) => {
     }
 
     const setFilterValue = (selectedValue) => {
-        props.store.dispatch(filterChange(selectedValue))
+        props.filterChange(selectedValue)
     }
 
     const dispatchToReducers = anecdote => {
-        props.store.dispatch(vote(anecdote))
-        props.store.dispatch(voteNotification(anecdote))
-        setTimeout(() => props.store.dispatch(setNotification('')), 5000)
+        props.vote(anecdote)
+        props.voteNotification(anecdote)
+        setTimeout(() => props.setNotification(''), 5000)
     }
 
     return (
@@ -42,7 +47,7 @@ const AnecdoteList = (props) => {
                     Not Important:<Radio value="NONIMPORTANT" />&nbsp;
                 </RadioGroup>
             </div></h3>
-            <div><Filter store={props.store} onChange/></div>
+            <div><Filter store={props.store} /></div>
             {selectAnecdotes(filter).map(anecdote =>
             <div key={anecdote.id}>
                 <div>
@@ -56,7 +61,7 @@ const AnecdoteList = (props) => {
                     Important: <input 
                             type='checkbox' 
                             name='filter' 
-                            onChange={() => props.store.dispatch(toggleImportanceOf(anecdote.id))}
+                            onChange={() => props.toggleImportanceOf(anecdote.id)}
                             defaultChecked={anecdote.important}
                             />
                 </div>
@@ -66,4 +71,20 @@ const AnecdoteList = (props) => {
     )
 }
 
-export default AnecdoteList
+const mapStateToProps = (state) => {
+    return {
+      anecdotes: state.anecdotes,
+      filter: state.filter,
+      searchText: state.searchText
+    }
+}
+
+const mapDispatchToProps = {
+    vote, 
+    toggleImportanceOf,
+    filterChange,
+    voteNotification,
+    setNotification,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)

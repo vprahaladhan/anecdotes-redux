@@ -1,5 +1,6 @@
 import React from 'react'
-// import {setNotification} from '../reducers/notificationReducer'
+import { connect } from 'react-redux'
+import { setNotification, voteNotification, addNotification } from '../reducers/notificationReducer'
 
 const Notification = (props) => {
   const style = {
@@ -8,13 +9,26 @@ const Notification = (props) => {
     borderWidth: 1
   }
 
-  style.display = props.store.getState().notification ? '' : 'none'
+  style.display = props.notification ? '' : 'none'
 
   return (
     <div style={style}>
-      {props.store.getState().notification}
+      {props.notification}
     </div>
   )
 }
 
-export default Notification
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
+
+export default 
+connect(
+  mapStateToProps,
+  { setNotification,
+    voteNotification,
+    addNotification
+  }
+)(Notification)

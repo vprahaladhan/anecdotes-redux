@@ -1,9 +1,10 @@
 import React from 'react'
-import { searchTextChange } from '../reducers/searchReducer';
+import { connect } from 'react-redux'
+import { searchTextChange } from '../reducers/searchReducer'
 
 const Filter = (props) => {
   const handleChange = (event) => {
-    props.store.dispatch(searchTextChange(event.target.value))
+    props.searchTextChange(event.target.value)
   }
   
   const style = {
@@ -17,4 +18,8 @@ const Filter = (props) => {
   )
 }
 
-export default Filter
+export default 
+connect (
+    null,
+    { searchTextChange }
+)(Filter)
