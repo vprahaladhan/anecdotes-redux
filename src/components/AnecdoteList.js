@@ -7,34 +7,8 @@ import Filter from './Filter'
 import { connect } from 'react-redux'
 
 const AnecdoteList = (props) => {
-
-    const { anecdotes, filter, searchText } =   { 
-                                                    anecdotes: props.anecdotes, 
-                                                    filter: props.filter,
-                                                    searchText: props.searchText
-                                                }
-    
-    const selectAnecdotes = (filter) => {
-        const searchedAnecdotes = searchAnecdotes()
-        switch(filter) {
-            case 'IMPORTANT'    :   return searchedAnecdotes.filter(anecdote => anecdote.important)
-            case 'NONIMPORTANT' :   return searchedAnecdotes.filter(anecdote => !anecdote.important) 
-            default             :   return searchedAnecdotes
-        }
-    }
-
-    const searchAnecdotes = () => {
-        return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(searchText.toLowerCase()))
-    }
-
     const setFilterValue = (selectedValue) => {
-        props.filterChange(selectedValue)
-    }
-
-    const dispatchToReducers = anecdote => {
-        props.vote(anecdote)
-        props.voteNotification(anecdote)
-        setTimeout(() => props.setNotification(''), 5000)
+        setFilter(props, selectedValue)
     }
 
     return (
@@ -48,14 +22,14 @@ const AnecdoteList = (props) => {
                 </RadioGroup>
             </div></h3>
             <div><Filter store={props.store} /></div>
-            {selectAnecdotes(filter).map(anecdote =>
+            {props.anecdotes.map(anecdote =>
             <div key={anecdote.id}>
                 <div>
                     {anecdote.content}
                 </div>
                 <div>
                 has {anecdote.votes} votes
-                <button onClick={() => dispatchToReducers(anecdote)}>vote</button>
+                <button onClick={() => dispatchToReducers(props, anecdote)}>vote</button>
                 </div>
                 <div>
                     Important: <input 
@@ -71,9 +45,34 @@ const AnecdoteList = (props) => {
     )
 }
 
+const anecdotesToShow = (state) => {
+    const searchedAnecdotes = searchAnecdotes(state)
+    switch(state.filter) {
+        case 'IMPORTANT'    :   return searchedAnecdotes.filter(anecdote => anecdote.important)
+        case 'NONIMPORTANT' :   return searchedAnecdotes.filter(anecdote => !anecdote.important) 
+        default             :   return searchedAnecdotes
+    }
+}
+
+const searchAnecdotes = (state) => {
+    return state.anecdotes.filter(anecdote => {
+        return anecdote.content.toLowerCase().includes(state.searchText.toLowerCase())
+    })
+}
+
+const dispatchToReducers = (props, anecdote) => {
+    props.vote(anecdote)
+    props.voteNotification(anecdote)
+    setTimeout(() => props.setNotification(''), 5000)
+}
+
+const setFilter = (props, selectedValue) => {
+    props.filterChange(selectedValue)
+}
+
 const mapStateToProps = (state) => {
     return {
-      anecdotes: state.anecdotes,
+      anecdotes: anecdotesToShow(state),
       filter: state.filter,
       searchText: state.searchText
     }
