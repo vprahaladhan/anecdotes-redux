@@ -62,8 +62,7 @@ const searchAnecdotes = (state) => {
 
 const dispatchToReducers = (props, anecdote) => {
     props.vote(anecdote)
-    props.voteNotification(anecdote)
-    setTimeout(() => props.setNotification(''), 5000)
+    props.voteNotification(anecdote, 5000)
 }
 
 const setFilter = (props, selectedValue) => {

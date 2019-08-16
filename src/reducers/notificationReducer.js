@@ -5,18 +5,34 @@ export const setNotification = (notification) => {
     })
 } 
 
-export const voteNotification = (anecdote) => {
-  return ({
-      type: 'VOTE_NOTIFICATION',
+export const voteNotification = (anecdote, timeOutInMilliSecs) => {
+  return async dispatch => {
+    dispatch({
+      type: "VOTE_NOTIFICATION",
       anecdote
-  })
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'DO_NOTHING',
+        anecdote
+      })
+    }, timeOutInMilliSecs)
+  }
 } 
 
-export const addNotification = (content) => {
-  return ({
-      type: 'ADD_NOTIFICATION',
+export const addNotification = (content, timeOutInMilliSecs) => {
+  return async dispatch => {
+    dispatch({
+      type: "ADD_NOTIFICATION",
       content
-  })
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'DO_NOTHING',
+        content
+      })
+    }, timeOutInMilliSecs)
+  }
 } 
 
 

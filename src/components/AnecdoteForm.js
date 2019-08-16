@@ -9,8 +9,7 @@ const AnecdoteForm = (props) => {
     const addNewAnecdote = async (event) => {
         event.preventDefault()
         let anecdote = event.target['new-anecdote'].value
-        props.addNotification(anecdote)
-        setTimeout(() => props.setNotification(''), 5000)
+        props.addNotification(anecdote, 5000)
         event.target['new-anecdote'].value = ''
         props.createAnecdote(anecdote)
     }
