@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addAnecdote } from '../services/anecdotes'
+
 import { createAnecdote } from '../reducers/anecdoteReducer'
 import { setNotification, addNotification } from '../reducers/notificationReducer'
 
@@ -12,8 +12,7 @@ const AnecdoteForm = (props) => {
         props.addNotification(anecdote)
         setTimeout(() => props.setNotification(''), 5000)
         event.target['new-anecdote'].value = ''
-        const newAnecdote = await addAnecdote(anecdote)
-        props.createAnecdote(newAnecdote)
+        props.createAnecdote(anecdote)
     }
     
     return (

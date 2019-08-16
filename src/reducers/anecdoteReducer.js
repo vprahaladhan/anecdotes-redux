@@ -1,30 +1,28 @@
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    important: Math.random() > 0.5,
-    id: getId(),
-    votes: 0
-  }
-}
+import getAll from '../services/anecdotes'
+import { addAnecdote, updateAnecdote } from '../services/anecdotes'
 
 const compare = (a, b) => {
   return b.votes - a.votes
 }
 
 export const vote = (anecdote) => {
-  return ({
-    type: 'ADD_VOTE',
-    data: { id: anecdote.id }
-  })
+  return async dispatch => {
+    const updatedAnecdote = await updateAnecdote(anecdote)
+    dispatch ({
+      type: 'ADD_VOTE',
+      data: updatedAnecdote
+    })
+  }
 }
 
-export const createAnecdote = (anecdote) => {
-  return ({
-    type: 'ADD_ANECDOTE',
-    data: anecdote
-  })
+export const createAnecdote = content => {
+  return async dispatch => {
+    const anecdote = await addAnecdote(content)
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      data: anecdote,
+    })
+  }
 }
 
 export const toggleImportanceOf = (id) => {
@@ -34,21 +32,18 @@ export const toggleImportanceOf = (id) => {
   })
 }
 
-export const initializeAnecdotes = (anecdotes) => {
-  return {
-    type: 'INIT_ANECDOTES',
-    data: anecdotes
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await getAll()
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: anecdotes,
+    })
   }
 }
 
 const reducer = (state = [], action) => {
   switch(action.type) {
-    case 'ADD_VOTE'           : {
-                                  const anecdotes = [...state]
-                                  anecdotes.find(anecdote => anecdote.id === action.data.id).votes++
-                                  return anecdotes.sort(compare)
-                                }
-
     case 'ADD_ANECDOTE'       : return [...state].concat(action.data).sort(compare)
 
     case 'TOGGLE_IMPORTANCE'  : {
