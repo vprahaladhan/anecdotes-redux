@@ -53,7 +53,7 @@ const reducer = (state = [], action) => {
                                   return anecdotes.sort(compare)
                                 }
 
-    case 'INIT_ANECDOTES'     : return action.data
+    case 'INIT_ANECDOTES'     : return action.data.sort(compare)
 
     default                   : return state.sort(compare)
   }
